@@ -8,8 +8,8 @@ from urllib.request import urlopen
 
 app = Flask(__name__)
 VERIFY_TOKEN = 'ub7342tGB34BSDHHDFG'
-PAGE_ACCESS_TOKEN = 'EAAOmobUVC34BAHKhNa2f3jdIu4qQOSSdMJRWI9RnOAXlWw1VBzPZA8D02PHDz0wBliuHiDzzzy0YWE5ZCgTbGl94ibD5t29r4ZAneoK9RPLiCnfR8BFnyl8KcItb8FdgRWDUa2sawzXB0I7vJtz1Vu8RpDyJZAR3dsgzYadWb8hleGr0EC7vBdSLZBgppIdJj2AIBjM9J5QZDZD'
-ID_CITY=[]
+PAGE_ACCESS_TOKEN ='EAAOmobUVC34BAGc151jhHOmdwNYVWzXRfNAGtq7BlcBW5ohZCKW1kcH4Pou0u1ZBhTXYwZC9qHsTMdQ7uKZAHEyLoXZBRZAIzkrPyolAT3EkJXlVN8hl4FZAesL9APm7ONK4lbXFxl2OLOee55wBPULZBh957YlYBK4YYQnwYnIKLTBxaApTpu8ocdv0xDvsgOTtF9bMFPQxIQZDZD'
+
 @app.route('/', methods=['GET'])
 def test():
     return "Hello world"
@@ -184,39 +184,34 @@ def handlePostback(sender_id, received_postback):
     elif payload == "anhcho":
         rq = requests.get('https://dog.ceo/api/breeds/image/random').json()
         response = {
+
             "attachment": {
-                "type": "template",
+                "type": "image",
                 "payload": {
-                    "template_type": "generic",
-                    "elements": [{
-                        "image_url": rq['message'],
-                    }]
+                    "url": rq['message'],
+                    "is_reusable": True
                 }
+
             }
         }
-        callSendAPI(sender_id, response)
     elif payload == "anhmeme":
         rq = requests.get('https://api.imgflip.com/get_memes').json()
         arrMemes=rq['data']['memes']
         response = {
             "attachment": {
-                "type": "template",
+                "type": "image",
                 "payload": {
-                    "template_type": "generic",
-                    "elements": [{
-                        "image_url": arrMemes[random.randrange(0, len(arrMemes),1)]['url'],
-                    }]
+                    "url": arrMemes[random.randrange(0, len(arrMemes), 1)]['url'],
+                    "is_reusable": True
                 }
+
             }
         }
-
-        callSendAPI(sender_id, response)
     elif payload == "thongtinmeo":
         rq = requests.get('https://catfact.ninja/fact').json()
         response = {
             "text": rq['fact'],
         }
-        callSendAPI(sender_id, response)
     elif payload == "vnexpressSucKhoe":
         rq = callApiCrawl("vnexpressSucKhoe")
         for x in rq[0:5]:
@@ -270,7 +265,6 @@ def callApiCrawl(parameter):
     return result
 def handleMessage(sender_id, received_message):
     if received_message.get("text"):
-        # message_text = received_message.get("text").upper()
         response = {
             "attachment": {
                 "type": "template",
@@ -301,16 +295,7 @@ def handleMessage(sender_id, received_message):
                 }
             }
         }
-    elif  received_message.get("attachments"):
-        attachment_url = received_message["attachments"][0]["payload"].get("url")
-        url = 'https://emoplay.herokuapp.com'
-        with urlopen(attachment_url) as file:
-            content = file.read()
-        emoplay = requests.post(url, files={'image': content}).json()
-        response = {
-            "text": emoplay.get("result")
-        }
-    callSendAPI(sender_id, response)
+        callSendAPI(sender_id, response)
 
 def callSendAPI(sender_id, request_body):
     log("111111111111111")
@@ -330,7 +315,7 @@ def callSendAPI(sender_id, request_body):
 
     })
 
-    r = requests.post("https://graph.facebook.com/v4.0/me/messages", params=params, headers=headers, data=data)
+    r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
     if r.status_code != 200:
         log(r.status_code)
         log(r.text)
