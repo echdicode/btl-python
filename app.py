@@ -2,13 +2,13 @@
 import sys
 import json
 import requests
-
+import random
 from flask import Flask, request
 from urllib.request import urlopen
 
 app = Flask(__name__)
 VERIFY_TOKEN = 'ub7342tGB34BSDHHDFG'
-PAGE_ACCESS_TOKEN = 'EAAOmobUVC34BANSAhNymEamJwSKQY2vLUqMNnp108gnbKhZAz8LZCe1SXqP5WBbs5upnjU9nzEMjJDejW5zZAtFaZA8OXdYp2wZAbkZBRaxf8LwsiJZAPv03XkSzV5zOYc7vMMyZALeV7XJZBisw8lSYX0CQowQ7EZBHCfrE42zZBCYPf2GMX2yu1vZCYDZB8mdzbcZBlTdiomaO2zoAZDZD'
+PAGE_ACCESS_TOKEN = 'EAAOmobUVC34BAHKhNa2f3jdIu4qQOSSdMJRWI9RnOAXlWw1VBzPZA8D02PHDz0wBliuHiDzzzy0YWE5ZCgTbGl94ibD5t29r4ZAneoK9RPLiCnfR8BFnyl8KcItb8FdgRWDUa2sawzXB0I7vJtz1Vu8RpDyJZAR3dsgzYadWb8hleGr0EC7vBdSLZBgppIdJj2AIBjM9J5QZDZD'
 ID_CITY=[]
 @app.route('/', methods=['GET'])
 def test():
@@ -56,7 +56,66 @@ def handlePostback(sender_id, received_postback):
     if payload == "covid":
         rq = callApicovid("vn")
         response = {
-            "text": f'số ca mắc là {str(rq.get("cases"))}  số người tử vong là: {str(rq.get("deaths")) }số người hồi phục là: {str(rq.get("recovered"))}',
+            "text": f'số ca mắc là {str(rq.get("cases"))}  số người tử vong là: {str(rq.get("deaths")) } số người hồi phục là: {str(rq.get("recovered"))}',
+        }
+    elif payload == "tintuc":
+        log("payload == tintuc")
+        response = {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [{
+                        "title": "Is this the right picture?",
+                        "subtitle": "Tap a button to answer.",
+                        "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0wvj2caokPnNWS6WOvcxabzYzGuCkFTWEyA&usqp=CAU",
+                        "buttons": [
+                            {
+                                "type": "postback",
+                                "title": "VN Express",
+                                "payload": "vnexpress",
+                            },
+                            {
+                                "type": "postback",
+                                "title": "Kenh14",
+                                "payload": "kenh14",
+                            },
+                        ],
+                    }]
+                }
+            }
+        }
+    elif payload == "vnexpress":
+        log("payload == vnexpress")
+        response = {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [{
+                        "title": "Is this the right picture?",
+                        "subtitle": "Tap a button to answer.",
+                        "image_url": "https://s1cdn.vnecdn.net/vnexpress/restruct/i/v589/logo_default.jpg",
+                        "buttons": [
+                            {
+                                "type": "postback",
+                                "title": "Sức khỏe",
+                                "payload": "vnexpressSucKhoe",
+                            },
+                            {
+                                "type": "postback",
+                                "title": "Giáo dục",
+                                "payload": "vnexpressGiaoDuc",
+                            },
+                            {
+                                "type": "postback",
+                                "title": "Pháp luật",
+                                "payload": "vnexpressPhapLuat",
+                            }
+                        ],
+                    }]
+                }
+            }
         }
     elif payload == "kenh14":
         log("payload == kenh14")
@@ -68,39 +127,141 @@ def handlePostback(sender_id, received_postback):
                     "elements": [{
                         "title": "Is this the right picture?",
                         "subtitle": "Tap a button to answer.",
-                        "image_url": "https://static.ybox.vn/2020/4/3/1586938466864-1582303297391-1574763681287-1570840773007-Thi%E1%BA%BFt%20k%E1%BA%BF%20kh%C3%B4ng%20t%C3%AAn.png",
+                        "image_url": "http://rubee.com.vn/admin/webroot/upload/image//images/tin-tuc/kenh14-logo-2.png",
                         "buttons": [
                             {
                                 "type": "postback",
-                                "title": "sport",
-                                "payload": "kenk14Sport",
+                                "title": "Âm nhạc",
+                                "payload": "Kenh14Musik",
                             },
                             {
                                 "type": "postback",
-                                "title": "thegioi",
+                                "title": "Thế giới",
                                 "payload": "kenh14TheGioi",
                             },
                             {
                                 "type": "postback",
-                                "title": "hocduong",
+                                "title": "Học đường",
                                 "payload": "kenh14HocDuong",
                             }
-
                         ],
                     }]
                 }
             }
         }
-    elif payload == "kenk14Sport":
-        rq = callApiCrawl("Kenh14Sport")
-        for x in rq:
+    elif payload == "thugian":
+        log("payload == thugian")
+        response = {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [{
+                        "title": "Is this the right picture?",
+                        "subtitle": "Tap a button to answer.",
+                        "image_url": "https://file.hstatic.net/200000312633/file/cach_thu_gian_dau_oc_truoc_khi_ngu_se_cho_ban_mot_giac_ngu_sau_1_1c6649f49edb46d2afd8bf64c2528f43.jpg",
+                        "buttons": [
+                            {
+                                "type": "postback",
+                                "title": "ảnh chó",
+                                "payload": "anhcho",
+                            },
+                            {
+                                "type": "postback",
+                                "title": "thông tin thú vị về mèo",
+                                "payload": "thongtinmeo",
+                            },
+                            {
+                                "type": "postback",
+                                "title": "ảnh meme",
+                                "payload": "anhmeme",
+                            }
+                        ],
+                    }]
+                }
+            }
+        }
+    elif payload == "anhcho":
+        rq = requests.get('https://dog.ceo/api/breeds/image/random').json()
+        response = {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [{
+                        "image_url": rq['message'],
+                    }]
+                }
+            }
+        }
+        callSendAPI(sender_id, response)
+    elif payload == "anhmeme":
+        rq = requests.get('https://api.imgflip.com/get_memes').json()
+        arrMemes=rq['data']['memes']
+        response = {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [{
+                        "image_url": arrMemes[random.randrange(0, len(arrMemes),1)]['url'],
+                    }]
+                }
+            }
+        }
+
+        callSendAPI(sender_id, response)
+    elif payload == "thongtinmeo":
+        rq = requests.get('https://catfact.ninja/fact').json()
+        response = {
+            "text": rq['fact'],
+        }
+        callSendAPI(sender_id, response)
+    elif payload == "vnexpressSucKhoe":
+        rq = callApiCrawl("vnexpressSucKhoe")
+        for x in rq[0:5]:
+            response = {
+                "text": x,
+            }
+            callSendAPI(sender_id, response)
+    elif payload == "vnexpressGiaoDuc":
+        rq = callApiCrawl("vnexpressGiaoDuc")
+        for x in rq[0:5]:
+            response = {
+                "text": x,
+            }
+            callSendAPI(sender_id, response)
+    elif payload == "vnexpressPhapLuat":
+        rq = callApiCrawl("vnexpressPhapLuat")
+        for x in rq[0:5]:
+            response = {
+                "text": x,
+            }
+            callSendAPI(sender_id, response)
+    elif payload == "kenh14TheGioi":
+        rq = callApiCrawl("kenh14TheGioi")
+        for x in rq[0:5]:
             response = {
                 "text": "https://kenh14.vn/"+x,
             }
             callSendAPI(sender_id, response)
+    elif payload == "kenh14HocDuong":
+        rq = callApiCrawl("kenh14HocDuong")
+        for x in rq[0:5]:
+            response = {
+                "text": "https://kenh14.vn/"+x,
+            }
+            callSendAPI(sender_id, response)
+    elif payload == "kenh14Musik":
+        rq = callApiCrawl("kenh14Musik")
+        for x in rq[0:5]:
+            response = {
+                "text": "https://kenh14.vn"+x,
+            }
+            callSendAPI(sender_id, response)
     else:
         response={
-            "text": "https://kenh14.vn/",
+            "text": "",
         }
     callSendAPI(sender_id, response)
 def callApiCrawl(parameter):
@@ -127,15 +288,14 @@ def handleMessage(sender_id, received_message):
                             },
                             {
                                 "type": "postback",
-                                "title": "vnexpress",
-                                "payload": "vnexpress",
+                                "title": "Tin tức",
+                                "payload": "tintuc",
                             },
                             {
                                 "type": "postback",
-                                "title": "kenh14",
-                                "payload": "kenh14",
-                            }
-
+                                "title": "Thư giãn",
+                                "payload": "thugian",
+                            },
                         ],
                     }]
                 }
@@ -183,4 +343,3 @@ def callApicovid(country):
 def log(message):  # simple wrapper for logging to stdout on heroku
     print(message)
     sys.stdout.flush()
-
