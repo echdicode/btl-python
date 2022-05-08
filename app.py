@@ -7,8 +7,8 @@ from flask import Flask, request
 from urllib.request import urlopen
 
 app = Flask(__name__)
-VERIFY_TOKEN = 'ub7342tGB34BSDHHDFG'
-PAGE_ACCESS_TOKEN ='EAAOmobUVC34BAGc151jhHOmdwNYVWzXRfNAGtq7BlcBW5ohZCKW1kcH4Pou0u1ZBhTXYwZC9qHsTMdQ7uKZAHEyLoXZBRZAIzkrPyolAT3EkJXlVN8hl4FZAesL9APm7ONK4lbXFxl2OLOee55wBPULZBh957YlYBK4YYQnwYnIKLTBxaApTpu8ocdv0xDvsgOTtF9bMFPQxIQZDZD'
+VERIFY_TOKEN = ''
+PAGE_ACCESS_TOKEN =''
 
 @app.route('/', methods=['GET'])
 def test():
